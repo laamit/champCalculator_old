@@ -2,17 +2,27 @@
 #' 
 #' @param request Internal parameter for `{shiny}`. 
 #'     DO NOT REMOVE.
-#' @import shiny
+#' @import shiny shinythemes
 #' @noRd
 app_ui <- function(request) {
   tagList(
     # Leave this function for adding external resources
     golem_add_external_resources(),
     # Your application UI logic 
-    fluidPage(
-      h1("champCalculator")
-    )
-  )
+    navbarPage(
+      "CHAMP risk calculator",
+      theme = shinytheme("cerulean"),
+      inverse = TRUE,
+      # theme = shinytheme("sandstone"),
+      tabPanel(
+        "Multiple patients",
+        fluidPage( mod_use_table_ui("use_table_ui_1") )
+      ),
+      tabPanel(
+        "Single patient",
+        fluidPage( mod_single_patient_ui("single_patient_ui_1") )
+      )
+  ))
 }
 
 #' Add external Resources to the Application

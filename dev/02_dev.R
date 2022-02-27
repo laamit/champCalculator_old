@@ -24,17 +24,21 @@ usethis::use_package( "shiny" )
 usethis::use_package( "shinyFiles" )
 usethis::use_package( "shinythemes" )
 usethis::use_package( "shinyBS" )
+usethis::use_package( "tibble" )
+usethis::use_package( "rlang" )
+usethis::use_package( "assertthat" )
 
+attachment::att_from_rscripts()
 
 ## Add modules ----
 ## Create a module infrastructure in R/
-golem::add_module( name = "name_of_module1" ) # Name of the module
-golem::add_module( name = "name_of_module2" ) # Name of the module
+golem::add_module( name = "use_table" )
+golem::add_module( name = "single_patient" )
 
 ## Add helper functions ----
 ## Creates fct_* and utils_*
 golem::add_fct( "calculate_champ" ) 
-# golem::add_utils( "helpers" )
+golem::add_utils( "wrangle_variable" )
 
 ## External resources
 ## Creates .js and .css files at inst/app/www
@@ -45,6 +49,7 @@ golem::add_fct( "calculate_champ" )
 ## Add internal datasets ----
 ## If you have data in your package
 usethis::use_data_raw(name = "coeffs", open = FALSE ) 
+usethis::use_data_raw(name = "var_names", open = FALSE ) 
 
 ## Tests ----
 ## Add one line by test you want to create
@@ -70,33 +75,13 @@ covrpage::covrpage()
 ## (You'll need GitHub there)
 usethis::use_github()
 
-# GitHub Actions
-usethis::use_github_action() 
-# Chose one of the three
-# See https://usethis.r-lib.org/reference/use_github_action.html
-usethis::use_github_action_check_release() 
-usethis::use_github_action_check_standard() 
-usethis::use_github_action_check_full() 
-# Add action for PR
-usethis::use_github_action_pr_commands()
-
-# Travis CI
-usethis::use_travis() 
-usethis::use_travis_badge() 
-
-# AppVeyor 
-usethis::use_appveyor() 
-usethis::use_appveyor_badge()
-
-# Circle CI
-usethis::use_circleci()
-usethis::use_circleci_badge()
-
-# Jenkins
-usethis::use_jenkins()
-
-# GitLab CI
-usethis::use_gitlab_ci()
+# # GitHub Actions
+# usethis::use_github_action() 
+# # Chose one of the three
+# # See https://usethis.r-lib.org/reference/use_github_action.html
+# usethis::use_github_action_check_release() 
+# usethis::use_github_action_check_standard() 
+# usethis::use_github_action_check_full() 
 
 # You're now set! ----
 # go to dev/03_deploy.R
