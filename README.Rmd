@@ -2,54 +2,33 @@
 output: github_document
 ---
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
+# CHAMP risk calculator
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.path = "man/figures/README-",
-  out.width = "100%"
-)
-```
+## What is CHAMP
 
-# champCalculator
+CHAMP risk calculator is a tool which utilizes the algorithm introduced in X
 
-<!-- badges: start -->
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-<!-- badges: end -->
 
-The goal of champCalculator is to ...
+## Usage
 
-## Installation
+In short, the tool can be used to either calculate the risk of 30 mortality for 
+one patient using the *Single patient*-tab or for multiple patients using the 
+*Multiple patients*-tab. The former can be directly given the values of the variables 
+whereas the latter requires both the variable definitions excel table and the data
+as an excel table or csv file.
 
-You can install the released version of champCalculator from [CRAN](https://CRAN.R-project.org) with:
 
-``` r
-install.packages("champCalculator")
-```
 
-## Example
+### Single patient -tab
 
-This is a basic example which shows you how to solve a common problem:
+The *Single patient*-tab requires the user to manually input the values.
 
-```{r example}
-library(champCalculator)
-## basic example code
-```
 
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
+### Multiple patients -tab
 
-```{r cars}
-summary(cars)
-```
+The *Tables*-tab uses the *variable_definitions.xlsx* to read the given data and
+wrangle it for the tool. The risk can then be calculated and the given data can 
+be downloaded with the additional risk-column included.
 
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this. You could also use GitHub Actions to re-render `README.Rmd` every time you push. An example workflow can be found here: <https://github.com/r-lib/actions/tree/master/examples>.
 
-You can also embed plots, for example:
 
-```{r pressure, echo = FALSE}
-plot(pressure)
-```
-
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN.
