@@ -30,3 +30,5 @@ Language: en-US
 Depends: 
     R (>= 2.10)
 VignetteBuilder: knitr
+URL: https://github.com/laamit/champCalculator
+BugReports: https://github.com/laamit/champCalculator/issues
