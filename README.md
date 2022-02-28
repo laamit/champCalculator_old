@@ -64,11 +64,14 @@ column.
 
 ![](vignettes/champ_variable_definitions.png)
 
-The columns included in the table are: \* variable = Used to match the
-variable data to the variables used by the application, DO NOT CHANGE \*
-name_in_data = Name of the variable in the data to be uploaded to the
-application \* name_of_category = Category of the variable, DO NOT
-CHANGE \* value = values of the category of the variable
+The columns included in the table are:
+
+-   variable = Used to match the variable data to the variables used by
+    the application, DO NOT CHANGE
+-   name_in_data = Name of the variable in the data to be uploaded to
+    the application
+-   name_of_category = Category of the variable, DO NOT CHANGE
+-   value = values of the category of the variable
 
 You only need to make changes to the *name_in_data* and *value* columns.
 The name_in_data needs to match the name of the column in the data

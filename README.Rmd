@@ -65,6 +65,7 @@ in the *Options* column.
 ![](vignettes/champ_variable_definitions.png)
 
 The columns included in the table are:
+
 * variable = Used to match the variable data to the variables used by the application, DO NOT CHANGE
 * name_in_data = Name of the variable in the data to be uploaded to the application
 * name_of_category = Category of the variable, DO NOT CHANGE
