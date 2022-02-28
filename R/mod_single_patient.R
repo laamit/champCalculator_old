@@ -16,7 +16,7 @@ mod_single_patient_ui <- function(id){
       column(
         5,
         
-        selectInput("dispatch_code", 
+        selectInput(ns("dispatch_code"), 
                     h3("Dispatch code"),
                     choices = list(
                       "Cardiac arrest"              = "Cardiac arrest"              , 
@@ -31,26 +31,26 @@ mod_single_patient_ui <- function(id){
                       "Other"                       = "Other"                       ),
                     selected = "Cardiac arrest"),
         
-        radioButtons("vehicle", 
+        radioButtons(ns("vehicle"), 
                      h3("Vehicle type"),
                      choices = list(
                        "Ground unit" = "Ground unit",
                        "Helicopter or BG helicopter" = "Helicopter or BG helicopter"), 
                      selected = "Ground unit"),
         
-        radioButtons("med_facility", 
+        radioButtons(ns("med_facility"), 
                      h3("Located in medical facility"),
                      choices = list("No"  = "Not medical facility", 
                                     "Yes" = "Medical facility"), 
                      selected = "Not medical facility"),
         
-        radioButtons("sex", 
+        radioButtons(ns("sex"), 
                      h3("Sex"),
                      choices = list("Woman"  = "Woman", "Man" = "Man"), 
                      selected = "Woman"),
         
-        conditionalPanel(condition = "!input.rhythm_available",             
-                         radioButtons("cardiac_rhythm", 
+        conditionalPanel(condition = "!input.rhythm_not_available",             
+                         radioButtons(ns("cardiac_rhythm"), 
                                       h3("Cardiac rhythm (VF, VT, ASY, PEA)"),
                                       choices = list("No"  = "Other category", 
                                                      "Yes" = "VF, VT, ASY, PEA"), 
@@ -58,43 +58,44 @@ mod_single_patient_ui <- function(id){
         
       ),
       column(4, 
-             numericInput("age", h3("Age (years)"), 
+             numericInput(ns("age"), h3("Age (years)"), 
                           value = 18, min = 18, max = 100),
              
-             conditionalPanel(condition = "!input.pulse_available",
-                              numericInput("pulse", h3("Heart rate (bpm)"), 
+             conditionalPanel(condition = "!input.pulse_not_available",
+                              numericInput(ns("pulse"), h3("Heart rate (bpm)"), 
                                            value = 100, min = 20, max = 220)),
              
-             conditionalPanel(condition = "!input.rr_available",               
-                              numericInput("rr", h3("Sys blood pressure (mmHg)"), 
+             conditionalPanel(condition = "!input.rr_not_available",               
+                              numericInput(ns("rr"), h3("Sys blood pressure (mmHg)"), 
                                            value = 120, min = 40, max = 250)),
              
-             conditionalPanel(condition = "!input.spo2_available",               
-                              numericInput("spo2", h3("Oxygen saturation"), 
+             conditionalPanel(condition = "!input.spo2_not_available",               
+                              numericInput(ns("spo2"), h3("Oxygen saturation"), 
                                            value = 100, min = 40, max = 100)),   
              
-             conditionalPanel(condition = "!input.time_to_hems_available",               
-                              numericInput("time_to_hems", h3("Time to HEMS arrival (minutes)"), 
+             conditionalPanel(condition = "!input.time_to_hems_not_available",               
+                              numericInput(ns("time_to_hems"), h3("Time to HEMS arrival (minutes)"), 
                                            value = 30, min = 0, max = 160)),   
              
-             conditionalPanel(condition = "!input.gcs_available",               
-                              numericInput("gcs", h3("Glasgow Coma Scale"),  min = 3, max = 15, value = 15))
+             conditionalPanel(condition = "!input.gcs_not_available",               
+                              numericInput(ns("gcs"), h3("Glasgow Coma Scale"),  min = 3, max = 15, value = 15))
              
              
              
       ),
       column(3,
              h3("Missing variables"),
-             checkboxInput("pulse_available",        "Heart rate",              FALSE),
-             checkboxInput("rr_available",           "Systolic blood pressure", FALSE),
-             checkboxInput("rhythm_available",       "Cardiac rhythm",          FALSE),
-             checkboxInput("spo2_available",         "Oxygen saturation",       FALSE),
-             checkboxInput("gcs_available",          "Glasgow Coma Scale",      FALSE),
-             checkboxInput("time_to_hems_available", "Time to HEMS",            FALSE),
+             checkboxInput(ns("pulse_not_available"),        "Heart rate",              FALSE),
+             checkboxInput(ns("rr_not_available"),           "Systolic blood pressure", FALSE),
+             checkboxInput(ns("rhythm_not_available"),       "Cardiac rhythm",          FALSE),
+             checkboxInput(ns("spo2_not_available"),         "Oxygen saturation",       FALSE),
+             checkboxInput(ns("gcs_not_available"),          "Glasgow Coma Scale",      FALSE),
+             checkboxInput(ns("time_to_hems_not_available"), "Time to HEMS",            FALSE),
              
-             
-             h3("Results"),
-             textOutput("patient_risk")
+             tags$br(),
+             tags$br(),
+             h3("Estimated risk"),
+             h4(textOutput(ns("patient_risk")))
       )
     )
   )
@@ -106,30 +107,42 @@ mod_single_patient_ui <- function(id){
 mod_single_patient_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
- 
+    
     
     patient_risk <- reactive({
-      ## calculate patients risk reactively
       df_patient <- tibble(
-        age            = input$age,
-        pulse          = input$pulse,
-        rr             = input$rr,
-        spo2           = input$spo2,
-        time_to_hems   = input$time_to_hems,
-        gcs            = input$gcs,
+        age            = input$age %>% as.double(),
+        pulse          = input$pulse %>% as.double(),
+        rr             = input$rr %>% as.double(),
+        spo2           = input$spo2 %>% as.double(),
+        time_to_hems   = input$time_to_hems %>% as.double(),
+        gcs            = input$gcs %>% as.double(),
         sex            = input$sex,
         cardiac_rhythm = input$cardiac_rhythm,
         med_facility   = input$med_facility,
         vehicle        = input$vehicle,
         code           = input$dispatch_code
-      ) 
+      ) %>% 
+        mutate(
+          cardiac_rhythm = ifelse(cardiac_rhythm == "Yes", "VF, VT, ASY, PEA", "Other category"),
+          med_facility = ifelse(med_facility == "Yes", "Medical facility", "Not medical facility"),
+          
+          
+          pulse          = if_else(input$pulse_not_available,  NA_real_, .data$pulse),
+          rr             = if_else(input$rr_not_available,     NA_real_, .data$rr),
+          cardiac_rhythm = if_else(input$rhythm_not_available, NA_character_, .data$cardiac_rhythm),
+          spo2           = if_else(input$spo2_not_available,   NA_real_, .data$spo2),
+          gcs            = if_else(input$gcs_not_available,    NA_real_, .data$gcs),
+          time_to_hems   = if_else(input$time_to_hems_not_available, NA_real_, .data$time_to_hems),
+        )
       
-
-      calculate_champ(df_patient, champCalculator::coeffs)
+      risk <- calculate_champ(df_patient, champCalculator::coeffs)
+      risk_formatted <- paste0(round(risk, digits = 3) * 100, "%")
+      risk_formatted
       
     })
     
-    output$patient_risk <- renderText({ paste0("Risk: ", patient_risk(), "%") })
+    output$patient_risk <- renderText({ patient_risk() })
     
   })
 }

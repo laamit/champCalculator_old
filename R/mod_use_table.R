@@ -15,11 +15,11 @@ mod_use_table_ui <- function(id){
       fluidRow(
         column(5,
                h3("Upload definitions and data"),
-               fileInput('definitions', 'Variable definitions table',
+               fileInput(ns('definitions'), 'Variable definitions table',
                          multiple = FALSE,
                          accept = c(".xlsx")),
                
-               fileInput('data', 'Data in excel or csv format',
+               fileInput(ns('data'), 'Data in excel or csv format',
                          multiple = FALSE,
                          accept = c('text/plain',
                                     '.txt',
@@ -30,15 +30,15 @@ mod_use_table_ui <- function(id){
         column(4, 
                h3("Calculate and download"),
                HTML(strrep(br(), 1)),
-               actionButton("calculate_risk",
+               actionButton(ns("calculate_risk"),
                             "Calculate the risk",
                             class = "btn btn-primary"),
                HTML(strrep(br(), 4)),
-               downloadButton("downloadData", "Download data with risk"),
+               downloadButton(ns("downloadData"), "Download data with risk"),
         ),
         column(3,
                h3("Options"),
-               checkboxInput("limit_values", "Winsorize values to match original data", TRUE)
+               checkboxInput(ns("limit_values"), "Winsorize values to match original data", TRUE)
         ))
   )
 }

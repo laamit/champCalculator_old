@@ -4,23 +4,21 @@
 #'
 #' @return Vector of risks for each observation.
 #'
-#' @noRd
 #' 
 #' @param df_in Input data frame
 #' @param df_ind_coefs Data frame containing the coefficients for the models
 #' @param return_risk Should risk be returned? Default TRUE.
-#' @param calculate_available Should the best available model be used? 
-#' If FALSE missing data will lead to NA results. Default TRUE.
 #'
 #' @import assertthat dplyr rlang
+#'
+#' @export
 #'
 #' @examples
 #' 
 #' 
 calculate_champ <- function(df_in, 
                             df_coefs,
-                            return_risk = TRUE,
-                            calculate_available = TRUE) {
+                            return_risk = TRUE) {
   
   
   # sanity checks ---------------------------------------------------------------
@@ -40,7 +38,7 @@ calculate_champ <- function(df_in,
   
   df_in <- df_in %>% 
     dplyr::mutate(
-      sex_man        = dplyr::case_when(.data$sex == "man" ~ 1, .data$sex == "woman" ~ 0),
+      sex_man        = dplyr::case_when(.data$sex == "Man" ~ 1, .data$sex == "Woman" ~ 0),
       
       cardiac_rhythm = dplyr::case_when(
         .data$cardiac_rhythm == "VF, VT, ASY, PEA" ~ 1, 
@@ -48,11 +46,11 @@ calculate_champ <- function(df_in,
       
       med_facility   = dplyr::case_when(
         .data$med_facility == "Medical facility" ~ 1,
-        .data$med_facility == "Not medical facility" ~ 0),
+        .data$med_facility != "Medical facility" ~ 0),
       
       vehicle_ground_unit = dplyr::case_when(
         .data$vehicle == "Ground unit" ~ 1,
-        .data$vehicle == "Helicopter or BG helicopter" ~ 0)
+        .data$vehicle != "Ground unit" ~ 0)
     )
   
   
@@ -117,12 +115,17 @@ calculate_champ <- function(df_in,
   # calculate score ---------------------------------------------------------
   vars_included <- df_coefs %>% 
     dplyr::select(dplyr::starts_with("beta_")) %>% 
-    colnames() %>% 
-    sub("beta\\_", "", .data)
+    colnames()
+  vars_included <- sub("beta_", "", vars_included)
   
   score <- vapply(vars_included, function(x_var) {
     df_tmp[[ x_var ]] * df_tmp[[ paste0("beta_", x_var) ]]}, numeric(nrow(df_tmp))) 
-  score <- rowSums(score)
+
+  if ( nrow(df_tmp) == 1 ) {
+    score <- sum(score) 
+  } else {
+    score <- rowSums(score)
+  }
   
   if (!return_risk) return(score)
   
