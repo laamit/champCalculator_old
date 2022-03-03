@@ -25,20 +25,22 @@ wrangle_variable <- function(var_name, df_in, df_definitions, limit_values = TRU
   na_vals <- df_var_info %>% 
     dplyr::filter(.data$name_of_category == "<missing>") %>% 
     dplyr::pull(.data$value)
-  ## potential multiple values need to be converted to a vector
-  na_vals <- na_vals %>% strsplit(",") %>% unlist() 
   
   x <- df_in[[df_var_info$name_in_data[1]]]
-  x <- ifelse(x %in% na_vals, NA, x)
+  
+  if (!is.na(na_vals)) {
+    ## potential multiple values need to be converted to a vector
+    na_vals <- na_vals %>% strsplit(",") %>% unlist() 
+    x <- ifelse(x %in% na_vals, NA, x)
+  }
   
   # forcefully convert numeric variables to numeric--------------------------
   if (var_name %in% c(
-    "age",
-    "heart rate",
-    "systolic blood pressure",
-    "respiratory rate",
-    "oxygen saturation",
-    "delay from emergency call to HEMS unit arrival,",
+    "Age (years)",
+    "Heart rate (bpm)",
+    "Systolic blood pressure (mmHg)",
+    "Oxygen saturation (%)",
+    "Time to HEMS arrival (minutes)",
     "Glasgow Coma Scale"
   )) x <- as.numeric(x)
   
@@ -47,13 +49,11 @@ wrangle_variable <- function(var_name, df_in, df_definitions, limit_values = TRU
     ## Limits taken from the original data as 0.5 and 99.5 percentile values
     ## for variables can have long tails based on the original data
     df_limits <- tibble::tribble(
-      ~variable,                                            ~low,      ~high,
-      # "age",                                                16.4,       94.1,
-      "heart rate",                                         25,       200, 
-      "systolic blood pressure",                            51,       235, 
-      "respiratory rate",                                   0,        48,
-      "oxygen saturation",                                  50,       100,
-      "delay from emergency call to HEMS unit arrival,",     6,        126,
+      ~variable,                           ~low,      ~high,
+      "Heart rate (bpm)",                  25,       200, 
+      "Systolic blood pressure (mmHg)",    51,       235, 
+      "Oxygen saturation (%)",             50,       100,
+      "Time to HEMS arrival (minutes)",    6,        126,
     )
     
     var_limits <- df_limits %>% dplyr::filter(.data$variable == var_name)
@@ -67,11 +67,11 @@ wrangle_variable <- function(var_name, df_in, df_definitions, limit_values = TRU
   # wrangle categorical data ------------------------------------------------
   
   if (var_name %in% c(
-    "sex",
-    "cardiac rhythm",
-    "mission located in a medical facility",
-    "vehicle type",
-    "dispatch code"
+    "Patient sex",
+    "Cardiac rhythm",
+    "Medical facility or nursing home",
+    "HEMS vehicle",
+    "Patient group"
   )) {
     ## force variable to be character
     x <- as.character(x)

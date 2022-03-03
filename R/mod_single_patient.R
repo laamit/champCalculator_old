@@ -17,7 +17,7 @@ mod_single_patient_ui <- function(id){
         5,
         
         selectInput(ns("dispatch_code"), 
-                    h3("Dispatch code"),
+                    h3("Patient group"),
                     choices = list(
                       "Cardiac arrest"              = "Cardiac arrest"              , 
                       "Trauma"                      = "Trauma"                      ,
@@ -25,29 +25,29 @@ mod_single_patient_ui <- function(id){
                       "Chest pain"                  = "Chest pain"                  ,
                       "Stroke"                      = "Stroke"                      ,
                       "Neurological"                = "Neurological"                ,
-                      "Gynecological and obsterics" = "Gynecological and obsterics" ,
+                      "Gynaecology and obsterics"   = "Gynaecology and obsterics"   ,
                       "Infection"                   = "Infection"                   ,
                       "Psychiatric or intoxication" = "Psychiatric or intoxication" ,
                       "Other"                       = "Other"                       ),
                     selected = "Cardiac arrest"),
         
         radioButtons(ns("vehicle"), 
-                     h3("Vehicle type"),
+                     h3("HEMS vehicle"),
                      choices = list(
                        "Ground unit" = "Ground unit",
-                       "Helicopter or BG helicopter" = "Helicopter or BG helicopter"), 
+                       "Helicopter"  = "Helicopter"), 
                      selected = "Ground unit"),
         
         radioButtons(ns("med_facility"), 
-                     h3("Located in medical facility"),
-                     choices = list("No"  = "Not medical facility", 
-                                    "Yes" = "Medical facility"), 
-                     selected = "Not medical facility"),
+                     h3("Medical facility or nursing home"),
+                     choices = list("No"  = "No", 
+                                    "Yes" = "Yes"), 
+                     selected = "No"),
         
         radioButtons(ns("sex"), 
-                     h3("Sex"),
-                     choices = list("Woman"  = "Woman", "Man" = "Man"), 
-                     selected = "Woman"),
+                     h3("Patient sex"),
+                     choices = list("Female"  = "Female", "Male" = "Male"), 
+                     selected = "Female"),
         
         conditionalPanel(condition = "!input.rhythm_not_available",             
                          radioButtons(ns("cardiac_rhythm"), 
@@ -66,11 +66,11 @@ mod_single_patient_ui <- function(id){
                                            value = 100, min = 20, max = 220)),
              
              conditionalPanel(condition = "!input.rr_not_available",               
-                              numericInput(ns("rr"), h3("Sys blood pressure (mmHg)"), 
+                              numericInput(ns("rr"), h3("Systolic blood pressure (mmHg)"), 
                                            value = 120, min = 40, max = 250)),
              
              conditionalPanel(condition = "!input.spo2_not_available",               
-                              numericInput(ns("spo2"), h3("Oxygen saturation"), 
+                              numericInput(ns("spo2"), h3("Oxygen saturation /%)"), 
                                            value = 100, min = 40, max = 100)),   
              
              conditionalPanel(condition = "!input.time_to_hems_not_available",               
@@ -90,7 +90,7 @@ mod_single_patient_ui <- function(id){
              checkboxInput(ns("rhythm_not_available"),       "Cardiac rhythm",          FALSE),
              checkboxInput(ns("spo2_not_available"),         "Oxygen saturation",       FALSE),
              checkboxInput(ns("gcs_not_available"),          "Glasgow Coma Scale",      FALSE),
-             checkboxInput(ns("time_to_hems_not_available"), "Time to HEMS",            FALSE),
+             checkboxInput(ns("time_to_hems_not_available"), "Time to HEMS arrival",    FALSE),
              
              tags$br(),
              tags$br(),
@@ -125,7 +125,7 @@ mod_single_patient_server <- function(id){
       ) %>% 
         mutate(
           cardiac_rhythm = ifelse(cardiac_rhythm == "Yes", "VF, VT, ASY, PEA", "Other category"),
-          med_facility = ifelse(med_facility == "Yes", "Medical facility", "Not medical facility"),
+          # med_facility = ifelse(med_facility == "Yes", "Medical facility", "Not medical facility"),
           
           
           pulse          = if_else(input$pulse_not_available,  NA_real_, .data$pulse),

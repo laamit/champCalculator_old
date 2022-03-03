@@ -38,15 +38,15 @@ calculate_champ <- function(df_in,
   
   df_in <- df_in %>% 
     dplyr::mutate(
-      sex_man        = dplyr::case_when(.data$sex == "Man" ~ 1, .data$sex == "Woman" ~ 0),
+      sex_man = dplyr::case_when(.data$sex == "Male" ~ 1, .data$sex == "Female" ~ 0),
       
       cardiac_rhythm = dplyr::case_when(
         .data$cardiac_rhythm == "VF, VT, ASY, PEA" ~ 1, 
         .data$cardiac_rhythm != "VF, VT, ASY, PEA" ~ 0),
       
       med_facility   = dplyr::case_when(
-        .data$med_facility == "Medical facility" ~ 1,
-        .data$med_facility != "Medical facility" ~ 0),
+        .data$med_facility == "Yes" ~ 1,
+        .data$med_facility != "Yes" ~ 0),
       
       vehicle_ground_unit = dplyr::case_when(
         .data$vehicle == "Ground unit" ~ 1,
@@ -98,14 +98,14 @@ calculate_champ <- function(df_in,
       age_p3             = .data$age^3,
       gcs_p3             = .data$gcs^3,
       
-      code_cardiac_arr  = dplyr::case_when(.data$code == "cardiac arrest"     ~  1, !is.na(.data$code) ~ 0),          
-      code_trauma       = dplyr::case_when(.data$code == "trauma"             ~  1, !is.na(.data$code) ~ 0),   
-      code_respitory    = dplyr::case_when(.data$code == "respitory failure"  ~  1, !is.na(.data$code) ~ 0),        
-      code_chest_pain   = dplyr::case_when(.data$code == "chest pain"         ~  1, !is.na(.data$code) ~ 0),         
-      code_stroke       = dplyr::case_when(.data$code == "stroke"             ~  1, !is.na(.data$code) ~ 0),   
-      code_neurological = dplyr::case_when(.data$code == "neurological"       ~  1, !is.na(.data$code) ~ 0),     
-      code_psyc_intox   = dplyr::case_when(.data$code == "psychiatric or intoxication" ~  1, !is.na(.data$code) ~ 0),     
-      code_other        = dplyr::case_when(.data$code == "other"                     ~  1, !is.na(.data$code) ~ 0),   
+      code_cardiac_arr  = dplyr::case_when(.data$code == "Cardiac arrest"     ~  1, !is.na(.data$code) ~ 0),          
+      code_trauma       = dplyr::case_when(.data$code == "Trauma"             ~  1, !is.na(.data$code) ~ 0),   
+      code_respitory    = dplyr::case_when(.data$code == "Respitory failure"  ~  1, !is.na(.data$code) ~ 0),        
+      code_chest_pain   = dplyr::case_when(.data$code == "Chest pain"         ~  1, !is.na(.data$code) ~ 0),         
+      code_stroke       = dplyr::case_when(.data$code == "Stroke"             ~  1, !is.na(.data$code) ~ 0),   
+      code_neurological = dplyr::case_when(.data$code == "Neurological"       ~  1, !is.na(.data$code) ~ 0),     
+      code_psyc_intox   = dplyr::case_when(.data$code == "Psychiatric or intoxication" ~  1, !is.na(.data$code) ~ 0),     
+      code_other        = dplyr::case_when(.data$code == "Other"                     ~  1, !is.na(.data$code) ~ 0),   
       
       `intercept` = 1, # makes calculation easier
       
