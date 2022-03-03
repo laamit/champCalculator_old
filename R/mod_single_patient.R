@@ -51,33 +51,33 @@ mod_single_patient_ui <- function(id){
         
         conditionalPanel(condition = "!input.rhythm_not_available",             
                          radioButtons(ns("cardiac_rhythm"), 
-                                      h3("Cardiac rhythm (VF, VT, ASY, PEA)"),
-                                      choices = list("No"  = "Other category", 
-                                                     "Yes" = "VF, VT, ASY, PEA"), 
+                                      h3("Cardiac rhythm"),
+                                      choices = list("Other category"  = "Other category", 
+                                                     "VF, VT, ASY, PEA" = "VF, VT, ASY, PEA"), 
                                       selected = "Other category")),
         
       ),
       column(4, 
              numericInput(ns("age"), h3("Age (years)"), 
-                          value = 18, min = 18, max = 100),
+                          value = 18, min = 16, max = 100),
              
-             conditionalPanel(condition = "!input.pulse_not_available",
+             conditionalPanel(condition = "!input.pulse_not_available", ns = ns,
                               numericInput(ns("pulse"), h3("Heart rate (bpm)"), 
                                            value = 100, min = 20, max = 220)),
              
-             conditionalPanel(condition = "!input.rr_not_available",               
+             conditionalPanel(condition = "!input.rr_not_available", ns = ns,               
                               numericInput(ns("rr"), h3("Systolic blood pressure (mmHg)"), 
                                            value = 120, min = 40, max = 250)),
              
-             conditionalPanel(condition = "!input.spo2_not_available",               
+             conditionalPanel(condition = "!input.spo2_not_available", ns = ns,               
                               numericInput(ns("spo2"), h3("Oxygen saturation /%)"), 
                                            value = 100, min = 40, max = 100)),   
              
-             conditionalPanel(condition = "!input.time_to_hems_not_available",               
+             conditionalPanel(condition = "!input.time_to_hems_not_available",  ns = ns,              
                               numericInput(ns("time_to_hems"), h3("Time to HEMS arrival (minutes)"), 
                                            value = 30, min = 0, max = 160)),   
              
-             conditionalPanel(condition = "!input.gcs_not_available",               
+             conditionalPanel(condition = "!input.gcs_not_available",  ns = ns,              
                               numericInput(ns("gcs"), h3("Glasgow Coma Scale"),  min = 3, max = 15, value = 15))
              
              
@@ -95,7 +95,7 @@ mod_single_patient_ui <- function(id){
              tags$br(),
              tags$br(),
              h3("Estimated risk"),
-             h4(textOutput(ns("patient_risk")))
+             h2(textOutput(ns("patient_risk")))
       )
     )
   )
@@ -124,10 +124,6 @@ mod_single_patient_server <- function(id){
         code           = input$dispatch_code
       ) %>% 
         mutate(
-          cardiac_rhythm = ifelse(cardiac_rhythm == "Yes", "VF, VT, ASY, PEA", "Other category"),
-          # med_facility = ifelse(med_facility == "Yes", "Medical facility", "Not medical facility"),
-          
-          
           pulse          = if_else(input$pulse_not_available,  NA_real_, .data$pulse),
           rr             = if_else(input$rr_not_available,     NA_real_, .data$rr),
           cardiac_rhythm = if_else(input$rhythm_not_available, NA_character_, .data$cardiac_rhythm),
