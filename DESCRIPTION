@@ -1,8 +1,8 @@
 Package: champCalculator
 Title: CHAMP calculator
-Version: 0.0.0.9000
+Version: 0.0.1.0000
 Authors@R: person('Mitja', 'Lääperi', email = 'mitja@laaperi.com', role = c('cre', 'aut'))
-Description: Tool for calculating the risk ofd 30 day mortality using CHAMP.
+Description: Tool for calculating the risk for 30 day mortality using CHAMP.
 License: MIT + file LICENSE
 Imports: 
     assertthat,

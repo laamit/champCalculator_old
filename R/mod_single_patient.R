@@ -70,7 +70,7 @@ mod_single_patient_ui <- function(id){
                                            value = 120, min = 40, max = 250)),
              
              conditionalPanel(condition = "!input.spo2_not_available", ns = ns,               
-                              numericInput(ns("spo2"), h3("Oxygen saturation /%)"), 
+                              numericInput(ns("spo2"), h3("Oxygen saturation (%)"), 
                                            value = 100, min = 40, max = 100)),   
              
              conditionalPanel(condition = "!input.time_to_hems_not_available",  ns = ns,              

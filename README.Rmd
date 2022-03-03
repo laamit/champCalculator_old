@@ -59,6 +59,8 @@ values below 0.5 percentile or above 99.5 percentile will be winsorized to those
 values. You can disable this by toggling the *Winsorize values to match original data* 
 in the *Options* column.
 
+Note: The winsorization can lead to different results between the multiple and single 
+patient tabs due to the values changing.
 
 ### Preparing the variable defitions excel table
 

@@ -60,6 +60,9 @@ percentile will be winsorized to those values. You can disable this by
 toggling the *Winsorize values to match original data* in the *Options*
 column.
 
+Note: The winsorization can lead to different results between the
+multiple and single patient tabs due to the values changing.
+
 ### Preparing the variable defitions excel table
 
 ![](vignettes/champ_variable_definitions.png)
