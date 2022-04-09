@@ -35,6 +35,8 @@ mod_use_table_ui <- function(id){
                             class = "btn btn-primary"),
                HTML(strrep(br(), 4)),
                downloadButton(ns("downloadData"), "Download data with risk"),
+               HTML(strrep(br(), 4)),
+               verbatimTextOutput(ns("warning_output")),
         ),
         column(3,
                h3("Options"),
@@ -90,11 +92,62 @@ mod_use_table_server <- function(id){
                                 df_definitions = data_definitions()) %>%
           purrr::set_names(champCalculator::var_names$func) %>%
           dplyr::bind_cols()
+        ## create warnings for potentially bad variables
+        txt <- "Warning:"
+        
+        if (!all(dplyr::between(data_wrangled$rr, 0, 300), na.rm = TRUE)) {
+          txt <- paste(txt, "\nBlood pressure not between 0-300") }
+        if (!all(dplyr::between(data_wrangled$pulse, 0, 300), na.rm = TRUE)) {
+          txt <- paste(txt, "\nHeart rate not between 0-300")} 
+        if (!all(dplyr::between(data_wrangled$spo2, 0, 100), na.rm = TRUE)) {
+          txt <- paste(txt, "\nOxygen saturation not between 0-100")}
+        if (!all(dplyr::between(data_wrangled$time_to_hems, 0, 180), na.rm = TRUE)) {
+          txt <- paste(txt, "\nTime to HEMS not between 0-180")}
+        if (!all(dplyr::between(data_wrangled$gcs, 3, 15), na.rm = TRUE)) {
+          txt <- paste(txt, "\nGCS not between 3-15")}
+        if (!all(dplyr::between(data_wrangled$age, 16, 120), na.rm = TRUE)) {
+          txt <- paste(txt, "\nAge not between 16-120")}
+        
+        if (!(all(dplyr::between(data_wrangled$cardiac_rhythm, 0, 1), na.rm = TRUE) | 
+            rlang::is_logical(data_wrangled$cardiac_rhythm))) {
+          txt <- paste(txt, "\nCardiac rhythm not in the correct format")}
+        
+        if (!(all(dplyr::between(data_wrangled$medical_facility, 0, 1), na.rm = TRUE) | 
+            rlang::is_logical(data_wrangled$medical_facility))) {
+          txt <- paste(txt, "\nMedical facility not in the correct format")}
+        if (!(all(dplyr::between(data_wrangled$vehicle_ground_unit, 0, 1), na.rm = TRUE) | 
+            rlang::is_logical(data_wrangled$vehicle_ground_unit))) {
+          txt <- paste(txt, "\nVehicle not in the correct format")}
+        if (!(all(dplyr::between(data_wrangled$sex_male, 0, 1), na.rm = TRUE) | 
+            rlang::is_logical(data_wrangled$sex_male))) {
+          txt <- paste(txt, "\nSex not in the correct format")}
+        
+        if (txt != "Warning:") {
+          output$warning_output <- renderText({ txt })
+        } else {
+          output$warning_output <- renderText({ NULL })
+        }
+        
       } else {
         return(NULL)
       }
       
-      risk <- calculate_champ(data_wrangled, champCalculator::coeffs)
+      
+      risk <- calculate_champ(
+        rr                  = data_wrangled$rr,
+        pulse               = data_wrangled$pulse,
+        spo2                = data_wrangled$spo2,
+        gcs                 = data_wrangled$gcs,
+        time_to_hems        = data_wrangled$time_to_hems,
+        age                 = data_wrangled$age,
+        cardiac_rhythm      = data_wrangled$cardiac_rhythm,
+        medical_facility    = data_wrangled$medical_facility,
+        vehicle_ground_unit = data_wrangled$vehicle_ground_unit,
+        sex_male            = data_wrangled$sex_male,
+        code                = data_wrangled$code,
+        limit_values        = TRUE,
+        errors_as_warnings  = TRUE) 
+      
       df_orig <- data_input()
       df_orig$risk <- risk
       values$df_orig <- df_orig

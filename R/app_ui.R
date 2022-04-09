@@ -15,12 +15,12 @@ app_ui <- function(request) {
       inverse = TRUE,
       # theme = shinytheme("sandstone"),
       tabPanel(
-        "Multiple patients",
-        fluidPage( mod_use_table_ui("use_table_ui_1") )
-      ),
-      tabPanel(
         "Single patient",
         fluidPage( mod_single_patient_ui("single_patient_ui_1") )
+      ),
+      tabPanel(
+        "Multiple patients",
+        fluidPage( mod_use_table_ui("use_table_ui_1") )
       )
   ))
 }
