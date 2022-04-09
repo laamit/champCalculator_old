@@ -7,10 +7,10 @@ var_names <- tibble::tribble(
   "Oxygen saturation (%)",                     "spo2",
   "Time to HEMS arrival (minutes)",            "time_to_hems",
   "Glasgow Coma Scale",                        "gcs",
-  "Patient sex",                               "sex",
+  "Patient sex",                               "sex_male",
   "Cardiac rhythm",                            "cardiac_rhythm",
-  "Medical facility or nursing home",          "med_facility",
-  "HEMS vehicle",                              "vehicle",
+  "Medical facility or nursing home",          "medical_facility",
+  "HEMS vehicle",                              "vehicle_ground_unit",
   "Patient group",                             "code",
 )
 

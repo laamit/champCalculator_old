@@ -1,4 +1,4 @@
-#' wrangle_variable:  Wrangle input variables for the champ calculator 
+#' wrangle_variable:  Wrangle a single input variable for the champ calculator 
 #'
 #' @description A utils function
 #'
@@ -9,17 +9,16 @@
 #' @param df_in Input data frame
 #' @param df_definitions Variable definitions gotten from the 
 #'    variable_definitions.xlsx
-#' @param limit_values Should values be limited close to what the original data 
-#'    had? Default TRUE. Results might be unreliable without this.
-#'
 #' @return Vector containing the wrangled variable
 #'
 #' @importFrom dplyr filter %>% pull
 #' @importFrom tibble tribble
+#' 
+#' @export
 #'
 #' @examples
 #' 
-wrangle_variable <- function(var_name, df_in, df_definitions, limit_values = TRUE) {
+wrangle_variable <- function(var_name, df_in, df_definitions) {
   # setup ------------------------------------------------
   df_var_info <- df_definitions %>% dplyr::filter(.data$variable == var_name)
   na_vals <- df_var_info %>% 
@@ -44,26 +43,7 @@ wrangle_variable <- function(var_name, df_in, df_definitions, limit_values = TRU
     "Glasgow Coma Scale"
   )) x <- as.numeric(x)
   
-  # wrangle numeric data ---------------------------------------
-  if (limit_values) {
-    ## Limits taken from the original data as 0.5 and 99.5 percentile values
-    ## for variables can have long tails based on the original data
-    df_limits <- tibble::tribble(
-      ~variable,                           ~low,      ~high,
-      "Heart rate (bpm)",                  25,       200, 
-      "Systolic blood pressure (mmHg)",    51,       235, 
-      "Oxygen saturation (%)",             50,       100,
-      "Time to HEMS arrival (minutes)",    6,        126,
-    )
-    
-    var_limits <- df_limits %>% dplyr::filter(.data$variable == var_name)
-    
-    if (nrow(var_limits) != 0) {
-      x <- ifelse(x < var_limits$low, var_limits$low, x)
-      x <- ifelse(x > var_limits$high, var_limits$high, x)
-    }
-  } 
-  
+
   # wrangle categorical data ------------------------------------------------
   
   if (var_name %in% c(
@@ -84,6 +64,25 @@ wrangle_variable <- function(var_name, df_in, df_definitions, limit_values = TRU
     }
     ## change the "<any other value>" values to NA, i.e. values that were not defined above
     x[!(x %in% var_levels$name_of_category)] <- NA
+    
+    ## change binary variables to 0/1
+    if (var_name == "Patient sex") {
+      x <- dplyr::case_when(x == "Male" ~ 1, x == "Female" ~ 0)
+    }
+    if (var_name == "Cardiac rhythm") {
+      x <- dplyr::case_when(x == "VF, VT, Asystole, PEA" ~ 1, 
+                            x != "VF, VT, Asystole, PEA" ~ 0)
+      
+    }
+    if (var_name == "Medical facility or nursing home") {
+      x  <- dplyr::case_when(x == "Yes" ~ 1,
+                             x != "Yes" ~ 0)
+    }
+    if (var_name == "HEMS vehicle") {
+      x  <- dplyr::case_when(x == "Ground unit" ~ 1,
+                             x != "Ground unit" ~ 0)
+      
+    }
   }
   
   x

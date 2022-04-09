@@ -1,31 +1,68 @@
 
 # What is CHAMP
 
-CHAMP risk calculator is a tool which utilizes the algorithm introduced
-by Reitala et. al 2022.
+CHAMP calculator is a tool which utilizes the algorithm introduced by
+Reitala et. al 2022. to estimate a 30 day mortality risk in patients
+encountered by physician-staffed helicopter emergency medical services.
 
-# Installation
+# Launching the application
+
+## Web-version
+
+Web-version is available at <https://champcalculator.herokuapp.com/>
 
 ## As R package
 
-The application can be launched using R:
+### Installing R
+
+Firstly you need to install R <https://cran.r-project.org/> It is also
+recommended to install RStudio IDE for using R:
+<https://www.rstudio.com/products/rstudio/download/>
+
+After installing these launch RStudio and follow the instructions below.
+
+### Installing the package
+
+To install the package install remotes package and use the
+install_github-function to install the package directly from github:
 
 ``` r
 # To install
 # install.packages("remotes")
 remotes::install_github("laamit/champCalculator")
+```
 
-# To launch
+### Shiny GUI
+
+The shiny GUI for application can be launched in R:
+
+``` r
+# After installing the package, launch shiny app
 champCalculator::run_app()
 ```
 
-## As a standalone executable (WIP)
+### Commands in R
 
-The application will be packaged using electron into a standalone
-executable for Windows. These will be available for download in the
-releases section.
+Below is an example of using the function. The inputs can either be
+single values or vectors of the same length.
 
-# Usage
+``` r
+library(champCalculator)
+
+calculate_champ(rr = 100,
+pulse = 100,
+spo2 = 100,
+gcs = 15,
+time_to_hems = 100,
+cardiac_rhythm = 1,
+age = 20,
+medical_facility = 0,
+vehicle_ground_unit = 1,
+sex_male = 1,
+code = "trauma")
+```
+
+# Using the shiny app
 
 In short, the tool can be used to either calculate the risk of 30
 mortality for one patient using the *Single patient*-tab or for multiple
@@ -33,6 +70,18 @@ patients using the *Multiple patients*-tab. The former can be directly
 given the values of the variables whereas the latter requires both the
 variable definitions excel table and the data as an excel table or csv
 file.
+
+## Single patient -tab
+
+![](vignettes/champ_single.png)
+
+The *Single patient*-tab requires the user to manually input the values.
+
+To calculate the predicted risk for 30 day mortality you simply need to
+fill in the values and the risk will be automatically calculated. The
+application automatically chooses the best available model for the given
+variables i.e. if systolic blood pressure is missing just leave the
+input empty.
 
 ## Multiple patients -tab
 
@@ -62,6 +111,13 @@ column.
 
 Note: The winsorization can lead to different results between the
 multiple and single patient tabs due to the values changing.
+
+The application will show potential warnings about bad or wrong input
+data under the “Download data with risk” -button. In this case double
+check your variable_definitions-table for potential errors.  
+If the continuous variables are beyond the given limits you can use the
+winsorization toggle to limit the values to more reliable scale and
+avoid potentially unrealiable results.
 
 ### Preparing the variable defitions excel table
 
@@ -93,13 +149,69 @@ other values will be converted to missing values (= NA in R). This can
 lead to NA risk estimates if the variable with missing values is not one
 of the six allowed missing variables.
 
-## Single patient -tab
+# Using the R functions
 
-![](vignettes/champ_single.png)
+After installing the package you you can use the
+calculate_champ-function to calculate the champ risk:
 
-The *Single patient*-tab requires the user to manually input the values.
+``` r
+library(champCalculator)
 
-To calculate the predicted risk for 30 day mortality you simply need to
-fill in the values and the risk will be automatically calculated. You
-can toggle the missing variables using the check boxes under the
-*Missing variables* -section.
+calculate_champ(rr = 100,
+pulse = 100,
+spo2 = 100,
+gcs = 15,
+time_to_hems = 100,
+cardiac_rhythm = 1,
+age = 20,
+medical_facility = 0,
+vehicle_ground_unit = 1,
+sex_male = 1,
+code = "trauma")
+```
+
+Note that the calculate_champ-function expects the continous variables
+to be numeric and binary variables to be 0/1 or FALSE/TRUE. The patient
+group (*code*-parameter) requires values of “cardiac arrest”, “trauma”,
+“respitory failure”, “chest pain”, “stroke”, “neurological”,
+“psychiatric or intoxication”, or “other”. All other non-missing values
+are assumed to not be in any of those groups and instead belong to
+“Gynaecology and obstetrics” and “Infection” groups.
+
+To use the variable_definitions-excel use the wrangle_variable-function
+to wrangle the data into the required format:
+
+``` r
+library(champCalculator)
+
+# load the unprocessed data
+#unprocessed_data <- ....
+
+# load the variable_definitons-excel
+# install.packages("readxl") # if readxl is not installed run 
+df_definitions <- readxl::read_excel("variable_definitions.xlsx")
+
+# Note: wrangle_variable expects a single variable as input
+# so use lapply to loop through the variable wrangling
+data_wrangled <- lapply(champCalculator::var_names$data, 
+  wrangle_variable,
+  df_in = data_input(), 
+  df_definitions = data_definitions()) %>%
+  # set column names and combine to data frame
+  purrr::set_names(champCalculator::var_names$func) %>%
+  dplyr::bind_cols()
+
+# add the champ risk to the original data
+unprocessed_data$risk <-  with(data_wrangled, 
+  champCalculator::calculate_champ(rr = rr,
+                  pulse = pulse,
+                  spo2 = spo2,
+                  gcs = gcs,
+                  time_to_hems = time_to_hems,
+                  cardiac_rhythm = cardiac_rhythm,
+                  age = age,
+                  medical_facility = medical_facility,
+                  vehicle_ground_unit = vehicle_ground_unit,
+                  sex_male = sex_male,
+                  code = code))  
+```

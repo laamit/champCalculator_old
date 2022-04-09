@@ -4,7 +4,6 @@
 #'
 #' @format A tibble with 64 rows and 1370 variables:
 #' \describe{
-#'   \item{set_name}{Name of the model set}
 #'   \item{ind_X}{Indicator if variable X is used}
 #'   \item{beta_X}{Regression coefficient for X variable}
 #'   ...
