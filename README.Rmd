@@ -4,7 +4,6 @@ output: github_document
 
 # What is CHAMP
 
-<<<<<<< HEAD
 CHAMP calculator is a tool which utilizes the algorithm introduced by 
 Reitala et. al 2022. to estimate a 30 day mortality risk in patients 
 encountered by physician-staffed helicopter emergency medical services.
@@ -16,31 +15,13 @@ encountered by physician-staffed helicopter emergency medical services.
 
 Web-version is available at [https://champcalculator.herokuapp.com/](https://champcalculator.herokuapp.com/)
 
-=======
-CHAMP risk calculator ((https://champcalculator.herokuapp.com/)[https://champcalculator.herokuapp.com/]) is a tool which utilizes the algorithm introduced by 
-Reitala et. al 2022.
-
-# Launching the application
-
-## Web-version
-
-Web-version is available at (https://champcalculator.herokuapp.com/)[https://champcalculator.herokuapp.com/]
-
->>>>>>> 723b38c2a21b249e0c57e79ef9bbfd7d205f8f09
-
 ## As R package
 
 ### Installing R
 
-<<<<<<< HEAD
 Firstly you need to install R [https://cran.r-project.org/](https://cran.r-project.org/)
 It is also recommended to install RStudio IDE for using R: 
 [https://www.rstudio.com/products/rstudio/download/](https://www.rstudio.com/products/rstudio/download/)
-=======
-Firstly you need to install R (https://cran.r-project.org/)[https://cran.r-project.org/]
-It is also recommended to install RStudio IDE for using R: 
-(https://www.rstudio.com/products/rstudio/download/) [https://www.rstudio.com/products/rstudio/download/]
->>>>>>> 723b38c2a21b249e0c57e79ef9bbfd7d205f8f09
 
 After installing these launch RStudio and follow the instructions below.
 
@@ -56,22 +37,16 @@ remotes::install_github("laamit/champCalculator")
 ```
 
 ### Shiny GUI
-<<<<<<< HEAD
 
 The shiny GUI for application can be launched in R:
 
-=======
-
-The shiny GUI for application can be launched in R:
-
->>>>>>> 723b38c2a21b249e0c57e79ef9bbfd7d205f8f09
 ```r
 # After installing the package, launch shiny app
 champCalculator::run_app()
 ```
 
 ### Commands in R
-<<<<<<< HEAD
+
 
 Below is an example of using the function. The inputs can either be single 
 values or vectors of the same length.
@@ -91,32 +66,7 @@ vehicle_ground_unit = 1,
 sex_male = 1,
 code = "trauma")
 ```
-=======
 
-Below is an example of using the function. The inputs can either be single 
-values or vectors of the same length.
->>>>>>> 723b38c2a21b249e0c57e79ef9bbfd7d205f8f09
-
-```r
-library(champCalculator)
-
-calculate_champ(rr = 100,
-pulse = 100,
-spo2 = 100,
-gcs = 15,
-time_to_hems = 100,
-cardiac_rhythm = 1,
-age = 20,
-medical_facility = 0,
-vehicle_ground_unit = 1,
-sex_male = 1,
-code = "trauma")
-```
-
-<<<<<<< HEAD
-=======
-
->>>>>>> 723b38c2a21b249e0c57e79ef9bbfd7d205f8f09
 # Using the shiny app
 
 In short, the tool can be used to either calculate the risk of 30 mortality for 

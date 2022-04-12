@@ -1,43 +1,23 @@
 
 # What is CHAMP
 
-<<<<<<< HEAD
 CHAMP calculator is a tool which utilizes the algorithm introduced by
 Reitala et. al 2022. to estimate a 30 day mortality risk in patients
 encountered by physician-staffed helicopter emergency medical services.
-=======
-CHAMP risk calculator
-((<https://champcalculator.herokuapp.com/>)\[<https://champcalculator.herokuapp.com/>\])
-is a tool which utilizes the algorithm introduced by Reitala et. al
-2022.
->>>>>>> 723b38c2a21b249e0c57e79ef9bbfd7d205f8f09
 
 # Launching the application
 
 ## Web-version
 
-<<<<<<< HEAD
 Web-version is available at <https://champcalculator.herokuapp.com/>
-=======
-Web-version is available at
-(<https://champcalculator.herokuapp.com/>)\[<https://champcalculator.herokuapp.com/>\]
->>>>>>> 723b38c2a21b249e0c57e79ef9bbfd7d205f8f09
 
 ## As R package
 
 ### Installing R
 
-<<<<<<< HEAD
 Firstly you need to install R <https://cran.r-project.org/> It is also
 recommended to install RStudio IDE for using R:
 <https://www.rstudio.com/products/rstudio/download/>
-=======
-Firstly you need to install R
-(<https://cran.r-project.org/>)\[<https://cran.r-project.org/>\] It is
-also recommended to install RStudio IDE for using R:
-(<https://www.rstudio.com/products/rstudio/download/>)
-\[<https://www.rstudio.com/products/rstudio/download/>\]
->>>>>>> 723b38c2a21b249e0c57e79ef9bbfd7d205f8f09
 
 After installing these launch RStudio and follow the instructions below.
 
